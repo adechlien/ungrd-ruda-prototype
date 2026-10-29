@@ -17,29 +17,14 @@
 
       <!--Panel de notificaciones-->
         @if (notificationsOpen()) {
-          <section
-            class="workspace-notifications bg-surface border-solid rounded-lg mb-4 shadow-[0_4px_12px_#282a6610] p-[17px] border border-border-soft max-[700px]:fixed max-[700px]:left-22 max-[700px]:bottom-5 max-[700px]:w-[min(280px,_calc(100vw_-_104px))] max-[700px]:z-40 max-[700px]:max-h-[70dvh] max-[700px]:overflow-y-auto max-[700px]:m-0"
+          <section #notificationsPanel
+            class="workspace-notifications bg-surface border-solid rounded-lg mb-4 shadow-popup p-[17px] border border-border-soft max-[700px]:fixed max-[700px]:left-22 max-[700px]:bottom-5 max-[700px]:w-[min(280px,_calc(100vw_-_104px))] max-[700px]:z-40 max-[700px]:max-h-[70dvh] max-[700px]:overflow-y-auto max-[700px]:m-0"
             id="workspace-notifications"
             aria-label="Notificaciones"
           >
-            <div class="workspace-notifications-title flex justify-between items-center mb-2.5 gap-2.5">
-              <h2 class="text-[15px] font-semibold">Notificaciones</h2>
-              <button class="in-data-[theme=dark]:focus-visible:outline-[#ffca20] rounded-[5px] p-[5px] focus-visible:outline-solid focus-visible:outline-brand-purple focus-visible:outline-2 focus-visible:outline-offset-3" type="button" aria-label="Cerrar notificaciones" (click)="notificationsOpen.set(false)">
-                <tabler-icon icon="x" [size]="18" />
-              </button>
-            </div>
+            <h2 class="workspace-notifications-title text-[15px] font-semibold">Notificaciones</h2>
             @if (pendingRecords().length) {
-              <p class="mt-3 text-[12px] leading-[1.7]">
-                <strong>{{ pendingRecords().length }} registros por terminar</strong>
-              </p>
-              <p class="mt-3 text-[12px] leading-[1.7]">Puede continuar sus borradores desde Registros.</p>
-              <button
-                type="button"
-                class="workspace-notification-link mt-3.5 text-[12px] text-brand-purple `in-data-[theme=dark]:focus-visible:outline-[#ffca20] focus-visible:outline-solid focus-visible:outline-brand-purple focus-visible:outline-2 focus-visible:outline-offset-3"
-                (click)="navigateDashboard('forms')"
-              >
-                Ver mis registros
-              </button>
+              <p class="mt-3 text-[12px] leading-[1.7]">Tiene {{ pendingRecords().length }} registros en borrador. Puede continuar sus borradores desde Registros.</p>
             } @else {
               <p class="mt-3 text-[12px] leading-[1.7]">No tiene registros pendientes.</p>
             }
@@ -93,7 +78,7 @@
               ><strong class="block text-[13px] font-semibold max-[1100px]:text-[12px]">{{ recordStore.user()?.name }}</strong><small class="in-[[data-theme=dark]]:text-[#ffca20] block text-[9px] tracking-[0.5px] mt-[1px] text-brand-purple">{{ recordStore.user()?.organizationType }}</small></span
             >
           </button>
-          <button
+          <button #notificationsButton
             type="button"
             class="workspace-bell relative grid place-items-center w-8.5 h-9.5 shrink-0 rounded-[7px] in-[[data-theme=dark]]:hover:bg-[rgb(255_255_255_/_10%)] in-[[data-theme=dark]]:focus-visible:[outline-color:#ffca20] hover:bg-surface-selected focus-visible:outline-solid focus-visible:outline-brand-purple focus-visible:outline-2 focus-visible:outline-offset-3"
             [attr.aria-label]="
@@ -128,7 +113,7 @@
           }
         </nav>
         <div class="workspace-account workspace-compact-account mt-auto flex w-full flex-col items-center gap-3 border-t border-border-soft in-[[data-theme=dark]]:border-white/20 pt-4">
-          <button type="button" class="workspace-bell relative grid size-9 place-items-center rounded-lg hover:bg-surface-selected in-[[data-theme=dark]]:hover:bg-[rgb(255_255_255_/_10%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-purple in-[[data-theme=dark]]:focus-visible:outline-[#ffca20]" aria-label="Notificaciones" title="Notificaciones" [attr.aria-expanded]="notificationsOpen()" aria-controls="workspace-notifications" (click)="toggleNotifications()">
+          <button #notificationsButton type="button" class="workspace-bell relative grid size-9 place-items-center rounded-lg hover:bg-surface-selected in-[[data-theme=dark]]:hover:bg-[rgb(255_255_255_/_10%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-purple in-[[data-theme=dark]]:focus-visible:outline-[#ffca20]" aria-label="Notificaciones" title="Notificaciones" [attr.aria-expanded]="notificationsOpen()" aria-controls="workspace-notifications" (click)="toggleNotifications()">
             <tabler-icon icon="bell" [size]="22" /><span class="hidden max-[700px]:block">Avisos</span>
             @if (unreadNotifications() && pendingRecords().length) { <span class="workspace-unread absolute right-1 top-1 size-1.5 rounded-full bg-brand-purple in-[[data-theme=dark]]:bg-[#ffca20]" aria-hidden="true"></span> }
           </button>

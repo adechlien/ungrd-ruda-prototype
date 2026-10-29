@@ -26,8 +26,6 @@ type SummaryTab = 'general' | 'legal' | 'reparacion' | 'definiciones';
 export class App {
   // signal guarda estado mutable y notifica a la plantilla cuando su valor cambia.
   @ViewChild('leaveDialog') leaveDialog?: ElementRef<HTMLDialogElement>;
-  @ViewChild('profileMenu') profileMenu?: ElementRef<HTMLElement>;
-  @ViewChild('profileButton') profileButton?: ElementRef<HTMLButtonElement>;
   readonly canFinish = computed(() => validateCapture(this.capture()).length === 0);
   openLeaveDialog():void {
     clearTimeout(this.localSaveTimer);
@@ -147,11 +145,16 @@ export class App {
   closeNotifications(): void { this.notificationsOpen.set(false); this.profileOpen.set(false); }
 
   @HostListener('document:click', ['$event'])
-  closeProfileOutside(event: MouseEvent): void {
-    if (!this.profileOpen() || !(event.target instanceof Node)) return;
-    if (this.profileMenu?.nativeElement.contains(event.target)) return;
-    if (this.profileButton?.nativeElement.contains(event.target)) return;
-    this.profileOpen.set(false);
+  closeAccountPanelsOutside(event: MouseEvent): void {
+    const path = event.composedPath();
+    const insidePanel = (id: string) => path.some(node => node instanceof Element
+      && (node.id === id || node.getAttribute('aria-controls') === id));
+    if (this.profileOpen() && !insidePanel('workspace-profile-menu')) {
+      this.profileOpen.set(false);
+    }
+    if (this.notificationsOpen() && !insidePanel('workspace-notifications')) {
+      this.notificationsOpen.set(false);
+    }
   }
 
   readonly currentRecord = signal<FormRecord | null>(null);
