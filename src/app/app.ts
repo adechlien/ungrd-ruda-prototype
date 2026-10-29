@@ -252,12 +252,12 @@ export class App {
     // La demostración solo permite el tema claro, incluida una preferencia anterior.
     document.documentElement.dataset['theme'] = 'light';
     localStorage.setItem('ruda-theme', 'light');
-    // effect sincroniza el signal de la modal con clases aplicadas al documento global.
+    // Bloquear solo la raíz evita crear en body un contenedor de scroll que desplace la sidebar sticky.
 
-    effect(() => {
+    effect((onCleanup) => {
       const locked = this.isSummaryOpen();
       document.documentElement.classList.toggle('modal-scroll-locked', locked);
-      document.body.classList.toggle('modal-scroll-locked', locked);
+      onCleanup(() => document.documentElement.classList.remove('modal-scroll-locked'));
     });
   }
 
