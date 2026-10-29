@@ -133,8 +133,6 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
 // Datos del modal de portada
 export const COVER_INFO = {
   title: 'Registro Único de Declaración',
-  subtitle: 'Registro Único de Desplazamiento Ambiental (RUDA)',
-  description: 'Instrumento para recibir y organizar la información necesaria para la declaración, identificación, caracterización, verificación y eventual incorporación de personas, hogares, comunidades o grupos sociales en el RUDA.',
   code: 'F-RUDA-001', version: '5', effectiveDate: '7 de julio de 2026', law: 'Ley 2577 del 29 de mayo de 2026',
   complementaryRules: 'Ley 387 de 1997 · Ley 1448 de 2011 · Ley 1523 de 2012 · Decreto 2569 de 2000',
   jurisprudence: 'Corte Constitucional, Sentencia T-123 de 2024',
