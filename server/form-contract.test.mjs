@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SECTION_SCHEMAS, ethnicApplies, applicable, captureProgress, captureStats, validateCapture, syncDeclarant, memberNeedsCompletion, householdComplete } from './generated/contract.mjs';
+import { SECTION_SCHEMAS, ethnicApplies, applicable, captureProgress, captureStats, validateCapture, syncDeclarant, memberNeedsCompletion, householdComplete, finishProgress, eventForType } from './generated/contract.mjs';
 
 const ethnicFields = SECTION_SCHEMAS[5].groups.flatMap(group => group.fields);
 const capture = answers => ({ answers, story: '', selectedEvent: 'inundacion', members: [] });
@@ -89,4 +89,67 @@ test('La ficha automática pendiente no cuenta como terminada hasta guardar su r
   assert.ok(validateCapture(saved).every(issue => issue.field !== 'members'));
   const restored = JSON.parse(JSON.stringify(pending.members));
   assert.ok(memberNeedsCompletion(syncDeclarant(identity, restored)[0]));
+});
+
+function minimumValidCapture() {
+  const answers = {};
+  SECTION_SCHEMAS.forEach((section,index)=>section.groups.forEach(group=>group.fields.forEach(field=>{
+    if (!field.required || field.id === '0' || field.id.startsWith('member-')) return;
+    answers[`section-${index+1}-${field.id}`] = field.options?.[0] || (field.type === 'number' ? '1' : field.type === 'date' ? '1990-05-12' : 'Dato de ejemplo');
+  })));
+  Object.assign(answers, {'section-1-1':'CC','section-1-2':'123456789','section-2-29':'Desastres','section-2-30':'Inundación','section-4-54':'No','section-6-applies':'No'});
+  return {answers, story:'Relato breve de los hechos.', selectedEvent:eventForType('Inundación'), members:[{'member-name':'Ana Pérez','member-review':'Completo'}]};
+}
+
+test('Puede terminar con todos los obligatorios y menos del 100 % general',()=>{
+  const c=minimumValidCapture();
+  assert.deepEqual(validateCapture(c),[]);
+  const p=finishProgress(c);
+  assert.equal(p.ready,true);
+  assert.equal(p.pending,0);
+  assert.equal(p.completed,p.total);
+  assert.ok(captureProgress(c)<100);
+});
+
+test('Una respuesta obligatoria ausente o inválida se descuenta del avance para terminar',()=>{
+  const c=minimumValidCapture();
+  delete c.answers['section-1-4'];
+  c.answers['section-1-2']='abc';
+  const p=finishProgress(c);
+  assert.equal(p.pending,2);
+  assert.equal(p.completed,p.total-2);
+  assert.equal(p.ready,false);
+});
+
+test('Los errores adicionales en opcionales bloquean el cierre sin inventar obligaciones nuevas',()=>{
+  const c=minimumValidCapture();
+  const base=finishProgress(c);
+  c.answers['section-1-14']='correo incorrecto';
+  const p=finishProgress(c);
+  assert.equal(p.total,base.total);
+  assert.equal(p.pending,0);
+  assert.equal(p.corrections,1);
+  assert.equal(p.ready,false);
+});
+
+test('El total obligatorio se adapta a unidad productiva y módulo étnico',()=>{
+  const c=minimumValidCapture();
+  const base=finishProgress(c);
+  c.answers['section-4-54']='Sí';
+  assert.ok(finishProgress(c).total>base.total);
+  const productive=finishProgress(c).total;
+  c.answers['section-6-applies']='Sí';
+  assert.ok(finishProgress(c).total>productive);
+  c.answers['section-4-54']='No';c.answers['section-6-applies']='No';
+  assert.equal(finishProgress(c).total,base.total);
+});
+
+test('La revisión del hogar cuenta como un requisito aunque tenga varios errores',()=>{
+  const c=minimumValidCapture();
+  c.members[0]['member-review']='Pendiente';
+  c.members[0]['member-document']='abc';
+  const p=finishProgress(c);
+  assert.equal(p.pending,1);
+  assert.equal(p.corrections,0);
+  assert.equal(p.ready,false);
 });

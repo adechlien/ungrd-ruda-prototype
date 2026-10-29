@@ -2,8 +2,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TablerIconComponent } from '@tabler/icons-angular';
 import { ProgressSidebarComponent, RecordSummary } from './progress-sidebar.component';
+import type { FinishProgress } from '../form-contract';
 
 export interface FormProgressState {
+  finish: FinishProgress;
   // Contrato compartido entre el componente raíz, la sección y el panel lateral.
   totalAnswered: number;
   totalFields: number;
@@ -32,7 +34,7 @@ export interface FormProgressState {
           </div>
         }
       </section>
-      <app-progress-sidebar [recordId]="recordId" [recordSummary]="recordSummary" class="col-span-2 min-w-0 max-[1160px]:col-span-1" [totalAnswered]="progress.totalAnswered" [totalFields]="progress.totalFields" [totalPercentage]="progress.totalPercentage" [sectionAnswered]="progress.sectionAnswered" [sectionFields]="progress.sectionFields" [sectionPercentage]="progress.sectionPercentage" [validation]="progress.validation" (coverRequested)="coverRequested.emit()" (partialFillRequested)="partialFillRequested.emit()" (completeFillRequested)="completeFillRequested.emit()" />
+      <app-progress-sidebar [recordId]="recordId" [recordSummary]="recordSummary" class="col-span-2 min-w-0 max-[1160px]:col-span-1" [finish]="progress.finish" [totalAnswered]="progress.totalAnswered" [totalFields]="progress.totalFields" [totalPercentage]="progress.totalPercentage" [sectionAnswered]="progress.sectionAnswered" [sectionFields]="progress.sectionFields" [sectionPercentage]="progress.sectionPercentage" [validation]="progress.validation" (coverRequested)="coverRequested.emit()" (partialFillRequested)="partialFillRequested.emit()" (completeFillRequested)="completeFillRequested.emit()" />
     </div>
   `,
 })

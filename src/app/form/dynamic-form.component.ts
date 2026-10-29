@@ -8,7 +8,7 @@ import { CustomSelectComponent } from '../custom-select.component';
 import { CustomTimePickerComponent } from '../custom-time-picker.component';
 import { RecordSummary } from '../shared/progress-sidebar.component';
 import { LocalSaveStatusComponent } from '../shared/local-save-status.component';
-import { FormSectionLayoutComponent } from '../shared/form-section-layout.component';
+import { FormSectionLayoutComponent, FormProgressState } from '../shared/form-section-layout.component';
 import { departamentos } from 'colombia-territorial';
 import { EventOption, EventType } from '../event-types';
 import { guideCode, memberNeedsCompletion, expandedFields, repeatedKey, validBirthDate } from '../form-contract';
@@ -65,7 +65,7 @@ export class DynamicFormComponent {
   @Input() sharedEventId = '';
   @Input() ethnicApplies = false;
   @Input() lastSavedAt: Date | null = null;
-  @Input() progress!: { totalAnswered: number; totalFields: number; totalPercentage: number; sectionAnswered: number; sectionFields: number; sectionPercentage: number; validation: { valid: boolean; issues: number; questionLabels: string[] } };
+  @Input() progress!: FormProgressState;
   @Output() fieldChange = new EventEmitter<{ section: number; id: string; value: string }>();
   @Output() sharedEventChange = new EventEmitter<string>();
   @Output() ethnicChange = new EventEmitter<string>();

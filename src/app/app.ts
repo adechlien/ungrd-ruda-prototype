@@ -13,7 +13,7 @@ import { ApiFailure, FormRecord, FormRecordsService } from './dashboard/form-rec
 
 import { FormsModule } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
-import { GUIDE_OPTIONS, GUIDE_CODES, guideCode, eventForType, validDocument, validateCapture, firstIncomplete, captureProgress, captureStats, applicable, ethnicApplies, declarantName, syncDeclarant } from './form-contract';
+import { GUIDE_OPTIONS, GUIDE_CODES, guideCode, eventForType, validDocument, validateCapture, firstIncomplete, captureProgress, captureStats, finishProgress, applicable, ethnicApplies, declarantName, syncDeclarant } from './form-contract';
 
 type SummaryTab = 'general' | 'legal' | 'reparacion' | 'definiciones';
 // @Component conecta la clase TypeScript con su selector, plantilla, estilos y componentes hijos.
@@ -208,24 +208,17 @@ export class App {
   readonly schemaFields = computed(() => this.sectionSchemas.flatMap((section, sectionIndex) =>
     section.groups.flatMap((group) => group.fields.filter(field=>!field.id.startsWith('member-') && applicable(sectionIndex+1,field.id,this.answers())).map((field) => this.fieldKey(sectionIndex + 1, field.id))),
   ));
-  readonly registeredFieldCount = computed(() => captureStats(this.capture()).total);
-  readonly answeredFieldCount = computed(() => captureStats(this.capture()).answered);
+  readonly totalProgress = computed(() => captureStats(this.capture()));
   private capture() {return {answers:this.answers(),story:this.story(),selectedEvent:this.selectedEvent(),members:this.members()};}
   readonly completionPercentage = computed(() => captureProgress(this.capture()));
   readonly currentSectionFieldCount = computed(() => captureStats(this.capture(),this.activeSection()).total);
   readonly currentSectionAnsweredCount = computed(() => captureStats(this.capture(),this.activeSection()).answered);
   readonly currentSectionPercentage = computed(() => captureStats(this.capture(),this.activeSection()).percentage);
   readonly currentSectionValidation = computed(() => this.validateSection(this.activeSection()));
+  readonly finishProgress = computed(() => finishProgress(this.capture()));
   private validateSection(section:number) {
     const issues=validateCapture(this.capture()).filter(issue=>issue.section===section);
-    const invalidAnswers=issues.filter(issue=>this.issueHasProvidedValue(issue.section,issue.field));
-    return {valid:issues.length===0,issues:issues.length,questionLabels:[...new Set(invalidAnswers.map(issue=>this.issueLabel(issue.section,issue.field)))]};
-  }
-  private issueHasProvidedValue(section:number,field:string):boolean {
-    if(field==='story')return Boolean(this.story().trim());
-    if(field==='members')return this.members().length>0;
-    if(Object.values(GUIDE_CODES).some(codes=>codes.includes(field)))return Boolean(this.answers()['guide-'+field]?.trim());
-    return Boolean(this.answers()[this.fieldKey(section,field)]?.trim());
+    return {valid:issues.length===0,issues:issues.length,questionLabels:[...new Set(issues.map(issue=>this.issueLabel(issue.section,issue.field)))]};
   }
   private issueLabel(section:number,field:string):string {
     if(field==='story')return 'Narración libre del declarante';
@@ -239,7 +232,8 @@ export class App {
   }
   readonly completedSections = computed(() => this.sections.filter((section) => this.isSectionComplete(section.number)).map((section) => section.number));
   readonly progressState = computed(() => ({
-    totalAnswered: this.answeredFieldCount(), totalFields: this.registeredFieldCount(), totalPercentage: this.completionPercentage(),
+    finish: this.finishProgress(),
+    totalAnswered: this.totalProgress().answered, totalFields: this.totalProgress().total, totalPercentage: this.totalProgress().percentage,
     sectionAnswered: this.currentSectionAnsweredCount(), sectionFields: this.currentSectionFieldCount(), sectionPercentage: this.currentSectionPercentage(), validation: this.currentSectionValidation(),
   }));
 

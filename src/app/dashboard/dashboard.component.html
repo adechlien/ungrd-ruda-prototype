@@ -45,7 +45,7 @@
     <article class="flex items-center bg-surface border-solid rounded-lg p-3 gap-[17px] border border-border-soft max-[1050px]:p-4.5 max-[1050px]:gap-3 max-[640px]:py-3.5">
       <span class="dash-metric-icon amber grid place-items-center w-12 h-12 rounded-lg bg-warning-soft text-warning shrink-0 max-[1300px]:w-9.5 max-[1300px]:h-9.5"><tabler-icon icon="clock" [size]="25" /></span>
       <div class="grid grid-cols-[minmax(0,_1fr)_auto] flex-1 min-w-0 gap-x-3 max-[640px]:grid-cols-[1fr_auto]">
-        <p class="text-[13px] text-secondary m-0 max-[640px]:self-center">Por terminar</p>
+        <p class="text-[13px] text-secondary m-0 max-[640px]:self-center">Borradores</p>
         <strong class="[grid-row:1_/_3] [grid-column:2] self-center text-right block text-[1.75rem] font-bold text-brand-navy leading-[1.25] mr-1 max-[640px]:[grid-row:1/3] max-[640px]:text-[26px]">{{ pending() }}</strong
         ><small>Continúe donde se quedó</small>
       </div>
@@ -69,7 +69,7 @@
               [attr.aria-pressed]="filter() === 'pending'"
               (click)="setFilter('pending')"
             >
-              Por terminar <span class="text-[10px] ml-1 py-0.5 px-[5px] rounded">{{ pending() }}</span>
+              Borradores <span class="text-[10px] ml-1 py-0.5 px-[5px] rounded">{{ pending() }}</span>
             </button>
             <button class="text-[12px] text-secondary whitespace-nowrap py-2 px-2.5 rounded-md max-[640px]:text-[11px] max-[640px]:px-2 [&.selected]:bg-surface [&.selected]:text-brand-navy [&.selected]:shadow-[0_1px_4px_#282a661a] [&.selected]:font-semibold focus-visible:outline-solid focus-visible:outline-brand-purple focus-visible:outline-2 focus-visible:outline-offset-3" [class.selected]="filter() === 'completed'" [attr.aria-pressed]="filter() === 'completed'" (click)="setFilter('completed')">
               Terminados <span class="text-[10px] ml-1 py-0.5 px-[5px] rounded">{{ completed() }}</span>
@@ -107,7 +107,7 @@
             (keydown.space)="$event.preventDefault(); openForm.emit(record)">
             <div class="dash-record-top flex items-center mb-5 text-brand-purple gap-2.5">
               <span class="dash-status inline-block text-[10px] font-semibold rounded-[20px] text-warning bg-warning-soft shrink-0 py-1 px-[9px] [&.done]:bg-success-soft [&.done]:text-success" [class.done]="record.status === 'completed'">{{
-                record.status === 'completed' ? 'Terminado' : 'Por terminar'
+                record.status === 'completed' ? 'Terminado' : 'Borrador'
               }}</span
               >
               <span class="dash-record-id text-[10px] text-secondary flex-1 min-w-0 [overflow-wrap:anywhere]">{{ record.id }}</span>
@@ -245,7 +245,7 @@
                   @for (record of (event.records || []); track record.id) {
                     <button class="focus-visible:outline-solid focus-visible:outline-brand-purple focus-visible:outline-2 focus-visible:outline-offset-1 grid grid-cols-[minmax(0,1fr)_auto_18px] items-center rounded-lg bg-surface text-ink text-left py-[11px] px-3 gap-2.5" type="button" (click)="openEventRecord(record.id)">
                       <span class="min-w-0"><strong class="block overflow-hidden text-ellipsis whitespace-nowrap text-brand-navy text-[12px]">{{ record.name || 'Declarante sin nombre' }}</strong><small class="block overflow-hidden text-ellipsis whitespace-nowrap mt-[3px] text-secondary text-[10px]">{{ record.document ? 'C.C ' + record.document : 'Documento pendiente' }}</small></span>
-                      <span class="dash-status inline-block text-[10px] font-semibold rounded-[20px] text-warning bg-warning-soft py-1 px-[9px] [&.done]:bg-success-soft [&.done]:text-success" [class.done]="record.status === 'completed'">{{ record.status === 'completed' ? 'Terminado' : 'Por terminar' }}</span>
+                      <span class="dash-status inline-block text-[10px] font-semibold rounded-[20px] text-warning bg-warning-soft py-1 px-[9px] [&.done]:bg-success-soft [&.done]:text-success" [class.done]="record.status === 'completed'">{{ record.status === 'completed' ? 'Terminado' : 'Borrador' }}</span>
                       <tabler-icon icon="chevron-right" [size]="18" />
                     </button>
                   }

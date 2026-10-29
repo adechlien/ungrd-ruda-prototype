@@ -121,6 +121,20 @@ export function validateCapture(c: Capture, finish = true): Issue[] {
  return issues;
 }
 export function firstIncomplete(c: Capture): number { return Math.min(...validateCapture(c).map(i=>i.section),7) % 7 || 1; }
+export interface FinishProgress { total: number; completed: number; pending: number; corrections: number; ready: boolean; percentage: number; }
+/** Cuenta obligaciones aplicables y válidas, no respuestas opcionales ni errores duplicados. */
+export function finishProgress(c: Capture): FinishProgress {
+ const obligations = SECTION_SCHEMAS.flatMap((s,si)=>s.groups.flatMap(g=>expandedFields(si+1,g.fields,c.answers)
+  .filter(f=>f.required && f.id!=='0' && !f.id.startsWith('member-') && applicable(si+1,f.id,c.answers))
+  .map(f=>({key:`${si+1}:${f.id}`,provided:Boolean(c.answers[`section-${si+1}-${f.id}`]?.trim())}))));
+ obligations.push({key:'3:story',provided:Boolean(c.story.trim())},{key:'4:members',provided:householdComplete(c.members)});
+ const issues = validateCapture(c);
+ const invalid = new Set(issues.map(i=>`${i.section}:${i.field}`));
+ const required = new Set(obligations.map(o=>o.key));
+ const completed = obligations.filter(o=>o.provided && !invalid.has(o.key)).length;
+ const total = obligations.length;
+ return {total,completed,pending:total-completed,corrections:[...invalid].filter(key=>!required.has(key)).length,ready:issues.length===0,percentage:Math.round(completed/total*100)};
+}
 export function captureProgress(c: Capture): number {
  const keys=SECTION_SCHEMAS.flatMap((s,si)=>s.groups.flatMap(g=>expandedFields(si+1,g.fields,c.answers).filter(f=>!f.id.startsWith('member-') && applicable(si+1,f.id,c.answers)).map(f=>`section-${si+1}-${f.id}`)));
  keys.push(...(GUIDE_CODES[c.selectedEvent] || []).map(code=>`guide-${code}`));
