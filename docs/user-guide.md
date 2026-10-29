@@ -6,7 +6,7 @@ RUDA es la aplicación web de la UNGRD para el Registro Único de Desplazamiento
 
 Con la aplicación se puede:
 
-- Crear registros y continuar los que quedaron por terminar.
+- Crear registros y continuar los que quedaron en borrador.
 - Asociar cada registro a un evento: inundación, deslizamiento, incendio forestal, entre otros.
 - Caracterizar el hogar: integrantes, bienes, ingresos, salud y módulo étnico-colectivo.
 - Adjuntar el acta o comunicado cuando corresponda.
@@ -66,14 +66,14 @@ Arriba aparecen tres contadores:
 | --- | --- |
 | Total de registros | Todos los registros de la cuenta. |
 | Terminados | Registros completos, que se pueden consultar y editar. |
-| Por terminar | Registros con información pendiente. |
+| Borradores | Registros con información pendiente. |
 
 Debajo, cada registro aparece como una tarjeta con su estado, su código, el nombre y documento del declarante, el evento con su municipio, el porcentaje de **Campos diligenciados** y la fecha de **Última actualización**. Para abrir un registro, se hace clic en su tarjeta.
 
 ### Buscar y filtrar
 
 1. Escribir en el buscador parte del nombre, el documento o el código del registro.
-2. Usar las pestañas **Todos**, **Por terminar** o **Terminados** para filtrar por estado.
+2. Usar las pestañas **Todos**, **Borradores** o **Terminados** para filtrar por estado.
 3. Pulsar el ícono del embudo, a la derecha del buscador, para filtrar por tipo de evento u ordenar los resultados.
 
 ![Panel de filtros abierto](../images/04-filtros.png)
@@ -112,7 +112,7 @@ Los gráficos se organizan en tres pestañas:
 
 ### Avisos
 
-La campana de la esquina inferior izquierda abre el panel de **Notificaciones**. Un punto sobre la campana indica que hay avisos. Hoy el panel informa cuántos registros están **por terminar** y recuerda que se pueden continuar desde **Registros**. El enlace **Ver mis registros** lleva al listado, y la **X** cierra el panel.
+La campana de la esquina inferior izquierda abre el panel de **Notificaciones**. Un punto sobre la campana indica que hay avisos. El panel informa cuántos registros están **en borrador** y recuerda que se pueden continuar desde **Registros**. Para cerrarlo, hacer clic fuera del panel o pulsar Escape.
 
 ![Panel de Notificaciones](../images/09-notificaciones.png)
 
@@ -133,11 +133,15 @@ La campana de la esquina inferior izquierda abre el panel de **Notificaciones**.
 | Barra de pasos | Las seis secciones del formulario. Se puede hacer clic en cualquiera para ir a ella. |
 | Panel derecho | Resumen del declarante y del evento, el botón **Ver portada** y el avance del registro. |
 
-El panel derecho muestra dos contadores de avance: las respuestas de todo el registro (por ejemplo, 4 de 94) y las de la sección abierta (por ejemplo, 4 de 23).
+El panel derecho distingue tres indicadores:
 
-Cuando todas las respuestas de la sección tienen un formato correcto, el panel derecho muestra el aviso **Información válida**. Al final de cada sección, el botón **Continuar** lleva a la siguiente.
+- **Todo el formulario:** respuestas diligenciadas de todo el registro, tanto obligatorias como opcionales. Llegar al 100 % no es necesario para terminar.
+- **Obligatorias:** requisitos obligatorios cumplidos de todo el registro. Incluye los campos obligatorios aplicables, la narración y la revisión de integrantes; el total cambia según el caso.
+- **En esta sección:** respuestas diligenciadas de la sección abierta, incluidas las opcionales.
 
-Si faltan datos o hay errores, el panel muestra en amarillo **Revisión necesaria**, con el número de respuestas por completar o corregir. A veces también indica qué campos revisar, por ejemplo **Miembros del hogar**.
+Cuando la sección cumple sus requisitos aparece **Sección válida**. Eso solo se refiere a la sección actual. Al final de cada sección, el botón **Continuar** lleva a la siguiente.
+
+Si faltan datos o hay errores, el panel muestra **Pendientes de esta sección**. Abrir **Ver campos pendientes** para consultar qué falta, incluidos los campos vacíos. Una respuesta opcional que se haya diligenciado con un formato inválido también debe corregirse o dejarse vacía.
 
 ### Ver portada
 
@@ -260,7 +264,7 @@ Si la carga falla, revisar el tamaño, el formato y la conexión. Un archivo al 
 
 ### Terminar un registro
 
-El botón **Terminar registro** aparece en gris mientras falten datos obligatorios. Cuando el registro está completo, se habilita.
+El botón **Terminar registro** aparece en gris mientras falten requisitos obligatorios o haya respuestas inválidas. El indicador **Obligatorias**, en el panel de progreso, muestra lo pendiente de todo el registro. Cuando cumple los requisitos, se habilita aunque queden preguntas opcionales vacías.
 
 1. Revisar las seis secciones.
 2. Revisar los integrantes que muestren el aviso **Completar datos**.
@@ -268,13 +272,13 @@ El botón **Terminar registro** aparece en gris mientras falten datos obligatori
 4. Pulsar **Terminar registro** y esperar la confirmación.
 5. Volver a **Mis registros** y comprobar que el registro aparece como **Terminado**.
 
-Mientras falte información, el botón permanece en gris y no se puede pulsar. El panel derecho muestra el aviso amarillo **Revisión necesaria** con el número de respuestas por completar o corregir. Cuando se corrigen, aparece **Información válida** y el botón se habilita. Al pulsarlo, la aplicación confirma que el registro quedó terminado y este pasa a la pestaña **Terminados** de **Mis registros**.
+Revisar **Obligatorias** para conocer el avance de los requisitos de todo el registro y **Pendientes de esta sección** para localizar los campos. Cuando todos los requisitos se cumplen y no hay errores adicionales, se habilita **Terminar registro**. Al pulsarlo, el servidor valida el guardado y, si tiene éxito, el registro pasa a **Terminados** en **Mis registros**.
 
 ![Registro completo con el botón Terminar registro habilitado](../images/18-terminar-habilitado.png)
 
 El porcentaje de avance cuenta también las preguntas opcionales. Por eso un registro puede terminarse sin llegar al 100 %.
 
-Si se edita un registro terminado y deja de cumplir los requisitos, vuelve a quedar **Por terminar**.
+Si se edita un registro terminado y deja de cumplir los requisitos, vuelve al estado **Borrador**.
 
 ### Volver sin perder trabajo
 
@@ -312,6 +316,6 @@ Estos controles son solo para la demostración y no deben estar disponibles cuan
 | Se pide recargar el formulario | Recargar la página después de revisar qué quedó guardado. |
 | El acta es rechazada | Revisar que sea PDF, PNG o JPG real y que no supere 4 MB. |
 | Se perdió la conexión | No cerrar el formulario, copiar aparte el texto importante y pulsar Guardar cuando vuelva la conexión. |
-| Un registro antiguo volvió a Por terminar | Completar los campos que exige la versión 8 y terminarlo de nuevo. |
+| Un registro antiguo volvió al estado Borrador | Completar los campos que exige la versión 8 y terminarlo de nuevo. |
 
 Si el problema continúa, informar al responsable del sistema qué se estaba haciendo, la hora y el mensaje que apareció. Nunca compartir la contraseña.
