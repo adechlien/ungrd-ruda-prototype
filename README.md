@@ -1,19 +1,12 @@
-# RUDA v8
+# RUDA v8 — Prototipo
 
-La referencia oficial de este proyecto es [RUDAM_F002_v8.xlsx](docs/RUDAM_F002_v8.xlsx), conservada sin modificaciones. La revisión del archivo es 8; su portada indica formato F-RUDA-001, versión 5. La aplicación usa Angular, una API Express y PostgreSQL 17.
+La referencia oficial de este proyecto es el formulario RUDAM_F002_v8.xlsx. La revisión del archivo es 8; su portada indica formato F-RUDA-001, versión 5. La aplicación usa Angular, una API Express y PostgreSQL 17.
 
 ## Modelo y documentación
 
-- [Modelo físico oficial DBML](docs/modelo-ruda-v8.dbml).
-- [Modelo entidad–relación](docs/modelo-er.md).
-- [Modelo ER completo en PNG](images/modelo-er.png).
-- [Casos de uso](docs/use-cases.md).
-- [Diagrama de casos de uso en PNG](images/casos-de-uso.png).
-- [Manual de sistema](docs/system-manual.md).
-- [Manual de usuario](docs/user-guide.md).
-- [Resultados de pruebas previas a Vercel](docs/pruebas-previas-vercel.md).
+El formulario de referencia, el modelo entidad–relación, los casos de uso, los manuales y las capturas se mantienen fuera del repositorio.
 
-Los DBML anteriores son antecedentes. El modelo activo usa registro, registro_declarante, tipo_evento, evento_principal y evento_especifico. Las tablas normalizadas contienen la información operativa y auditoria_registro conserva una captura por versión, incluidos borradores incompletos.
+El modelo activo usa registro, registro_declarante, tipo_evento, evento_principal y evento_especifico. Las tablas normalizadas contienen la información operativa y auditoria_registro conserva una captura por versión, incluidos borradores incompletos. Las migraciones necesarias para crear y actualizar la base se encuentran en `server/migrations/`.
 
 ## Ejecutar en local por primera vez
 
@@ -24,8 +17,8 @@ Los ejemplos siguientes usan PowerShell. Ejecutar todos los comandos desde la ra
 ### 1. Clonar e instalar dependencias
 
 ```powershell
-git clone https://github.com/adechlien/ungrd-ruda.git
-cd ungrd-ruda
+git clone https://github.com/adechlien/ungrd-ruda-prototype.git
+cd ungrd-ruda-prototype
 npm ci
 ```
 
@@ -68,9 +61,16 @@ npm run db:migrate
 npm run db:seed
 ```
 
-Las migraciones crean el esquema y el seed prepara las dos cuentas y registros ficticios. Las credenciales para copiar están en [Ingresar y salir del manual de usuario](docs/user-guide.md#2-ingresar-y-salir).
+Las migraciones crean el esquema y el seed prepara las siguientes cuentas con registros ficticios:
 
-Clonar el repositorio no copia la base de otro equipo ni sus registros actuales. El seed genera ejemplos; para reproducir exactamente una base existente hace falta un respaldo y su restauración, según el [manual de sistema](docs/system-manual.md).
+| Correo | Contraseña de demostración |
+| --- | --- |
+| `peter@example.com` | `RudaDemo2026!` |
+| `gwen@example.com` | `RudaDemo2026!` |
+
+Cada cuenta consulta únicamente sus propios registros.
+
+Clonar el repositorio no copia la base de otro equipo ni sus registros actuales. El seed genera ejemplos; para reproducir exactamente una base existente hace falta un respaldo y su restauración.
 
 ### 4. Iniciar API e interfaz en terminales separadas
 
@@ -152,7 +152,7 @@ Las migraciones 010 y 011 activan v8 y el almacenamiento de actas. La 010 conser
 
 En la base local se conservaron 28 registros y su historial. De ellos, 17 antes terminados requieren completar información v8 y pasaron a borrador.
 
-El seed crea cuentas y ejemplos ficticios cuando el funcionario todavía no tiene registros. No reemplaza capturas existentes. Las cuentas de demostración y su contraseña están en el [manual de usuario](docs/user-guide.md#2-ingresar-y-salir). Los registros y sesiones persisten en PostgreSQL. No eliminar el volumen de Docker si se desean conservar.
+El seed crea cuentas y ejemplos ficticios cuando el funcionario todavía no tiene registros. No reemplaza capturas existentes. Las credenciales de demostración se indican en el paso 3 de la instalación local. Los registros y sesiones persisten en PostgreSQL. No eliminar el volumen de Docker si se desean conservar.
 
 ## Reglas del formulario
 

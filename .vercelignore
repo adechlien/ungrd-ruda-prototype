@@ -6,8 +6,6 @@
 .angular
 tmp
 backups
-docs
-images
 *.dump
 *.backup
 *.log
