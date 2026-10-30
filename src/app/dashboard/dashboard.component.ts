@@ -2,8 +2,8 @@ import { buildStatistics, StatisticsGroup } from './statistics';
 import { Component, ElementRef, HostListener, ViewChild, computed, inject, input, output, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { TablerIconComponent } from '@tabler/icons-angular';
-import { EVENT_LABELS, FormRecord, FormRecordsService } from './form-records.service';
-import { CustomSelectComponent } from '../custom-select.component';
+import { EVENT_LABELS, FormRecord, FormRecordsService } from '../core/services/form-records.service';
+import { CustomSelectComponent } from '../shared/controls/custom-select.component';
 
 @Component({
   selector: 'app-dashboard',

@@ -2,7 +2,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TablerIconComponent } from '@tabler/icons-angular';
 import { ProgressSidebarComponent, RecordSummary } from './progress-sidebar.component';
-import type { FinishProgress } from '../form-contract';
+import type { FinishProgress } from '../form/model/form-contract';
 
 export interface FormProgressState {
   finish: FinishProgress;
@@ -46,11 +46,7 @@ export class FormSectionLayoutComponent {
   @Input() recordId = '';
   @Input() recordSummary: RecordSummary | null = null;
   @Output() coverRequested = new EventEmitter<void>();
-  @Input() canFinish = false;
-  @Input() lastSavedAt: Date | null = null;
   @Input() progress!: FormProgressState;
-  @Output() saveRequested = new EventEmitter<void>();
-  @Output() finishRequested = new EventEmitter<void>();
   @Output() partialFillRequested = new EventEmitter<void>();
   @Output() completeFillRequested = new EventEmitter<void>();
   @Output() sectionChange = new EventEmitter<number>();

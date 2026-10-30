@@ -1,8 +1,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {SECTION_SCHEMAS,validateCapture,eventForType} from './generated/contract.mjs';
-import {convertV7Capture} from './migrate-v8.mjs';
-import {demoSeeds} from './demo-records.mjs';
+import {SECTION_SCHEMAS,validateCapture,eventForType} from '../generated/contract.mjs';
+import {convertV7Capture} from '../migrate-v8.mjs';
+import {demoSeeds} from '../demo-records.mjs';
 
 test('La numeración oficial incluye cada pregunta 0–90 una sola vez',()=>{
  const numbers=SECTION_SCHEMAS.flatMap(s=>s.groups.flatMap(g=>g.fields.filter(f=>/^\d+$/.test(f.id)).map(f=>Number(f.id))));

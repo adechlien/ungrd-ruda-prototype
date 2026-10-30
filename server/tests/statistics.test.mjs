@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {buildStatistics} from '../src/app/dashboard/statistics.ts';
+import {buildStatistics} from '../../src/app/dashboard/statistics.ts';
 const record=(id,doc,answers={},eventId='1',savedAt='2026-09-10')=>({id,eventId,savedAt,answers:{'section-1-1':'CC','section-1-2':doc,...answers}});
 test('Cuenta eventos y personas sin duplicarlos por declaración',()=>{
  const result=buildStatistics([record('a','123456',{'section-1-8':'Femenino'},'1','2026-09-01'),record('b','123456',{'section-1-8':'Otro'},'2'),record('c','999999',{},'1')],[{id:'1',tipo:'Inundación'},{id:'2',tipo:'Sequía'},{id:'3',tipo:'Incendio'}]);

@@ -1,4 +1,4 @@
-// Fuente oficial: docs/referencias/RUDAM_F002_v8.xlsx
+// Fuente oficial: RUDAM_F002_v8.xlsx (documento mantenido fuera del repositorio).
 export const RUDA_REVISION = 8;
 export const FORM_VERSION = 5;
 // Esquema del formulario

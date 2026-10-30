@@ -2,17 +2,16 @@
 import { Component, EventEmitter, Input, Output, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TablerIconComponent } from '@tabler/icons-angular';
-import { EVENT_PRINCIPALS_BY_TYPE, SectionSchema, FormGroup } from '../form-schema';
-import { CustomDatePickerComponent } from '../custom-date-picker.component';
-import { CustomSelectComponent } from '../custom-select.component';
-import { CustomTimePickerComponent } from '../custom-time-picker.component';
+import { EVENT_PRINCIPALS_BY_TYPE, SectionSchema, FormGroup } from './model/form-schema';
+import { CustomDatePickerComponent } from '../shared/controls/custom-date-picker.component';
+import { CustomSelectComponent } from '../shared/controls/custom-select.component';
+import { CustomTimePickerComponent } from '../shared/controls/custom-time-picker.component';
 import { RecordSummary } from '../shared/progress-sidebar.component';
-import { LocalSaveStatusComponent } from '../shared/local-save-status.component';
 import { FormSectionLayoutComponent, FormProgressState } from '../shared/form-section-layout.component';
 import { departamentos } from 'colombia-territorial';
-import { EventOption, EventType } from '../event-types';
-import { guideCode, memberNeedsCompletion, expandedFields, repeatedKey, validBirthDate } from '../form-contract';
-import { SharedEvent, ActaFile } from '../dashboard/form-records.service';
+import { EventOption, EventType } from './model/event-types';
+import { guideCode, memberNeedsCompletion, expandedFields, repeatedKey, validBirthDate } from './model/form-contract';
+import { SharedEvent, ActaFile } from '../core/services/form-records.service';
 
 @Component({ selector: 'app-dynamic-form', imports: [FormsModule, TablerIconComponent, CustomDatePickerComponent, CustomSelectComponent, CustomTimePickerComponent, FormSectionLayoutComponent], templateUrl: './dynamic-form.component.html' })
 export class DynamicFormComponent {
@@ -54,9 +53,7 @@ export class DynamicFormComponent {
   @Input() recordId = '';
   @Input() recordSummary: RecordSummary | null = null;
   @Output() coverRequested = new EventEmitter<void>();
-  @Input() canFinish = false;
   @Input() story = '';
-  @Input() eventOptions: EventOption[] = [];
   @Input() selectedEvent!: EventType;
   @Input() selectedEventOption!: EventOption;
   @Input() selectedQuestions: string[] = [];
@@ -64,21 +61,15 @@ export class DynamicFormComponent {
   @Input() sharedEvents: SharedEvent[] = [];
   @Input() sharedEventId = '';
   @Input() ethnicApplies = false;
-  @Input() lastSavedAt: Date | null = null;
   @Input() progress!: FormProgressState;
   @Output() fieldChange = new EventEmitter<{ section: number; id: string; value: string }>();
   @Output() sharedEventChange = new EventEmitter<string>();
   @Output() ethnicChange = new EventEmitter<string>();
-  @Output() saveRequested = new EventEmitter<void>();
-  @Output() finishRequested = new EventEmitter<void>();
   @Output() partialFillRequested = new EventEmitter<void>();
   @Output() completeFillRequested = new EventEmitter<void>();
   @Output() sectionChange = new EventEmitter<number>();
   @Output() storyChange = new EventEmitter<string>();
-  @Output() eventChange = new EventEmitter<EventType>();
   @Output() answerChange = new EventEmitter<{ index: number; value: string }>();
-  readonly eventMenuOpen = signal(false);
-  readonly responseOptions = ['Sí', 'No', 'No sabe / No responde'];
   readonly memberModalOpen = signal(false);
   readonly members = signal<Record<string, string>[]>([]);
   readonly memberDraft = signal<Record<string, string>>({});
@@ -116,7 +107,6 @@ export class DynamicFormComponent {
 
   get memberFields() { return this.schema?.groups.find((group) => group.title === 'Miembros del hogar')?.fields ?? []; }
   answerKey(index: number): string { return 'guide-' + guideCode(this.selectedEvent,index); }
-  chooseEvent(value: EventType): void { this.eventChange.emit(value); this.eventMenuOpen.set(false); }
   fieldKey(id: string): string { return `section-${this.activeSection}-${id}`; }
   setValue(id: string, value: string): void {
     value=String(value??'');

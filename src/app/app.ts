@@ -1,7 +1,7 @@
 /** Componente raíz: conserva el estado general del formulario, calcula su progreso y coordina los componentes hijos. */
 import { Component, ElementRef, ViewChild, computed, effect, signal, inject, HostListener, DestroyRef } from '@angular/core';
-import { COVER_DEFINITIONS, COVER_INFO, LEGAL_REFERENCES, REPAIR_COMPONENTS, SECTION_SCHEMAS } from './form-schema';
-import { EventOption, EventType } from './event-types';
+import { COVER_DEFINITIONS, COVER_INFO, LEGAL_REFERENCES, REPAIR_COMPONENTS, SECTION_SCHEMAS } from './form/model/form-schema';
+import { EventType } from './form/model/event-types';
 import { DynamicFormComponent } from './form/dynamic-form.component';
 import { FormStepperComponent } from './layout/form-stepper.component';
 import { TablerIconComponent } from '@tabler/icons-angular';
@@ -9,13 +9,12 @@ import { LocalSaveStatusComponent } from './shared/local-save-status.component';
 import { SummaryModalComponent } from './summary/summary-modal.component';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ApiFailure, FormRecord, FormRecordsService } from './dashboard/form-records.service';
+import { ApiFailure, FormRecord, FormRecordsService } from './core/services/form-records.service';
 
 import { FormsModule } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
-import { GUIDE_OPTIONS, GUIDE_CODES, guideCode, eventForType, validDocument, validateCapture, firstIncomplete, captureProgress, captureStats, finishProgress, applicable, ethnicApplies, declarantName, syncDeclarant } from './form-contract';
+import { GUIDE_OPTIONS, GUIDE_CODES, guideCode, eventForType, validDocument, validateCapture, firstIncomplete, captureProgress, captureStats, finishProgress, applicable, ethnicApplies, declarantName, syncDeclarant } from './form/model/form-contract';
 
-type SummaryTab = 'general' | 'legal' | 'reparacion' | 'definiciones';
 // @Component conecta la clase TypeScript con su selector, plantilla, estilos y componentes hijos.
 @Component({
   selector: 'app-root',
@@ -160,17 +159,12 @@ export class App {
   readonly currentRecord = signal<FormRecord | null>(null);
   readonly formMessage = signal('');
   readonly canSaveDraft = computed(() => validDocument(this.answers()['section-1-1'] || 'CC', this.answers()['section-1-2'] || ''));
-  readonly hasPersistedRecord = computed(() => this.recordStore.records().some(record => record.id === this.currentRecord()?.id));
   readonly activeSection = signal(1);
   readonly isSummaryOpen = signal(false);
-  readonly activeSummaryTab = signal<SummaryTab>('general');
   readonly story = signal('');
   readonly selectedEvent = signal<EventType>('flood');
-  readonly eventMenuOpen = signal(false);
   readonly answers = signal<Record<string, string>>({});
   readonly savedLocallyAt = signal<Date | null>(null);
-  // computed deriva valores de otros signals y se recalcula al cambiar sus dependencias.
-  readonly characterCount = computed(() => this.story().length);
   // Constantes expuestas para que la plantilla pueda pasarlas a los componentes hijos.
   readonly coverInfo = COVER_INFO;
   readonly coverDefinitions = COVER_DEFINITIONS;
@@ -197,7 +191,6 @@ export class App {
     { number: 6, title: 'Étnico-colectivo', enabled: true },
   ];
   readonly eventOptions = GUIDE_OPTIONS;
-  readonly responseOptions = ['Sí', 'No', 'No sabe / No responde'];
   // El evento seleccionado determina dinámicamente qué preguntas se muestran.
   readonly selectedQuestions = computed(() =>
     this.eventOptions.find((event) => event.id === this.selectedEvent())?.questions ?? [],
@@ -205,9 +198,6 @@ export class App {
   readonly selectedEventOption = computed(() =>
     this.eventOptions.find((event) => event.id === this.selectedEvent()) ?? this.eventOptions[0],
   );
-  readonly schemaFields = computed(() => this.sectionSchemas.flatMap((section, sectionIndex) =>
-    section.groups.flatMap((group) => group.fields.filter(field=>!field.id.startsWith('member-') && applicable(sectionIndex+1,field.id,this.answers())).map((field) => this.fieldKey(sectionIndex + 1, field.id))),
-  ));
   readonly totalProgress = computed(() => captureStats(this.capture()));
   private capture() {return {answers:this.answers(),story:this.story(),selectedEvent:this.selectedEvent(),members:this.members()};}
   readonly completionPercentage = computed(() => captureProgress(this.capture()));
@@ -238,15 +228,6 @@ export class App {
   }));
 
   isSectionComplete(section:number):boolean {return this.validateSection(section).valid;}
-  readonly summaryTabs: { id: SummaryTab; label: string; icon: string }[] = [
-    { id: 'general', label: 'Información general', icon: 'info-circle' },
-    { id: 'definiciones', label: 'Definiciones', icon: 'book-2' },
-    { id: 'reparacion', label: 'Reparación integral', icon: 'users' },
-    { id: 'legal', label: 'Marco normativo', icon: 'scale' },
-  ];
-  readonly activeSummaryLabel = computed(() =>
-    this.summaryTabs.find((tab) => tab.id === this.activeSummaryTab())?.label ?? '',
-  );
 
   constructor() {
     // La demostración solo permite el tema claro, incluida una preferencia anterior.
@@ -262,8 +243,6 @@ export class App {
   }
 
   setStory(value: string): void { this.story.set(value); this.scheduleLocalSave(); }
-  setEvent(value: EventType): void { this.selectedEvent.set(value); this.scheduleLocalSave(); }
-  chooseEvent(value: EventType): void { this.setEvent(value); this.eventMenuOpen.set(false); }
   answerKey(index: number): string { return 'guide-' + guideCode(this.selectedEvent(),index); }
   setAnswer(index: number, value: string): void {
     this.answers.update((answers) => ({ ...answers, [this.answerKey(index)]: value }));
@@ -277,16 +256,10 @@ export class App {
     if(section === 2 && fieldId === '30') this.selectedEvent.set(eventForType(value));
     this.scheduleLocalSave();
   }
-  fieldPlaceholder(field: { label: string; type: string }): string {
-    if (field.type === 'email') return 'nombre@correo.com';
-    if (field.type === 'number') return 'Ingrese un valor numérico';
-    if (field.type === 'time') return 'hh:mm';
-    return `Ingrese ${field.label.toLowerCase()}`;
-  }
   goToSection(section: number): void {
     if (section >= 1 && section <= 6) this.activeSection.set(section);
   }
-  openSummary(): void { if (this.view() !== 'form') return; this.activeSummaryTab.set('general'); this.isSummaryOpen.set(true); }
+  openSummary(): void { if (this.view() !== 'form') return; this.isSummaryOpen.set(true); }
   closeSummary(): void { this.isSummaryOpen.set(false); }
 
   setMembers(members:Record<string,string>[]):void {this.members.set(syncDeclarant(this.answers(),members));this.scheduleLocalSave();}

@@ -2,8 +2,8 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, randomInt } from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { pool } from './db.mjs';
-import { SECTION_SCHEMAS, EVENT_PRINCIPALS_BY_TYPE, applicable, GUIDE_CODES, syncDeclarant } from './generated/contract.mjs';
+import { pool } from '../db.mjs';
+import { SECTION_SCHEMAS, EVENT_PRINCIPALS_BY_TYPE, applicable, GUIDE_CODES, syncDeclarant } from '../generated/contract.mjs';
 const base='http://127.0.0.1:4311/api';let child,laura,daniel,complete;const ids=[];const documents=[];const eventIds=[];
 async function request(path,method='GET',data,cookie){const response=await fetch(base+path,{method,headers:{...(data?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{})},body:data?JSON.stringify(data):undefined});const body=response.status===204?null:await response.json();return {status:response.status,body,cookie:response.headers.get('set-cookie')?.split(';')[0]};}
 function fresh(template){const r=structuredClone(template);r.id=randomUUID();r.version=0;r.answers['section-1-0']=r.id;ids.push(r.id);return r;}

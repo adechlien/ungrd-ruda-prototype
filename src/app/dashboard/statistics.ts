@@ -1,4 +1,4 @@
-import type { FormRecord, SharedEvent } from './form-records.service';
+import type { FormRecord, SharedEvent } from '../core/services/form-records.service';
 export type StatisticsGroup = 'overview' | 'displacement' | 'current';
 
 export function buildStatistics(records: FormRecord[], events: SharedEvent[]) {

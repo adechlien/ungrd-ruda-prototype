@@ -103,13 +103,17 @@ Angular redirige `/api` al servidor mediante `proxy.conf.json`, conservando el m
 | --- | --- |
 | Pantalla principal, acceso y navegación | `src/app/app.html` y `src/app/app.ts` |
 | Estilos y comportamiento responsive | `src/styles.css` y clases de las plantillas |
-| Preguntas y catálogos RUDA v8 | `src/app/form-schema.ts` |
-| Reglas y validación compartida | `src/app/form-contract.ts` |
+| Preguntas y catálogos RUDA v8 | `src/app/form/model/form-schema.ts` y `src/app/form/model/guide-catalog.ts` |
+| Reglas y validación compartida | `src/app/form/model/form-contract.ts` |
+| Acceso a la API y estado de sesión | `src/app/core/services/form-records.service.ts` |
+| Controles reutilizables | `src/app/shared/controls/` |
 | Captura del formulario | `src/app/form/` |
 | Listado y estadísticas | `src/app/dashboard/` |
 | API y archivos adjuntos | `server/app.mjs` y `server/acta.mjs` |
 | Persistencia del modelo activo | `server/repository-v8.mjs` |
 | Cambios de esquema | Nuevas migraciones en `server/migrations/` |
+| Pruebas del contrato, API y despliegue | `server/tests/` |
+| Construcción del contrato y ejecución de pruebas aisladas | `server/scripts/` |
 
 La interfaz se recompila automáticamente con `npm start`. Si se modifica el backend, detener la API con `Ctrl+C` y volver a ejecutar `npm run api`. Ese comando también regenera el contrato compartido: reiniciar la API después de cambiar preguntas o validaciones compartidas. No editar `server/generated/contract.mjs` manualmente.
 

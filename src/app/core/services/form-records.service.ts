@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { EventType } from '../event-types';
-import { Issue } from '../form-contract';
+import { EventType } from '../../form/model/event-types';
+import { Issue } from '../../form/model/form-contract';
 export interface FormRecord {
  acta?: ActaFile | null;
  revisionRuda: 8; versionFormato?: number;

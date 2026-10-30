@@ -1,6 +1,6 @@
 /** Navegador de pasos: recibe el estado de las secciones y notifica al padre cuando el usuario cambia de paso. */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormSection } from '../event-types';
+import { FormSection } from '../form/model/event-types';
 
 @Component({ selector: 'app-form-stepper', templateUrl: './form-stepper.component.html' })
 export class FormStepperComponent {

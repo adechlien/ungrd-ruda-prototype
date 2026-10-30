@@ -1,6 +1,5 @@
 /** Configuración global de Angular: registra proveedores, iconos y dependencias disponibles en la aplicación. */
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
 import {
   IconBell,
   IconLogout,
@@ -55,13 +54,11 @@ import {
   provideTablerIcons,
 } from '@tabler/icons-angular';
 
-import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   // Los providers registran servicios globales en el inyector de dependencias de Angular.
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
     // Solo se registran los iconos usados para no incluir la librería completa en el bundle.
     provideTablerIcons({
       IconBell,

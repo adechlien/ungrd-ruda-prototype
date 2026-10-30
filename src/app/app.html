@@ -194,15 +194,11 @@
               [recordSummary]="recordSummary()"
               [householdMembers]="members()"
               (membersChange)="setMembers($event)"
-              [canFinish]="canFinish() && !recordStore.saving()"
-              (saveRequested)="openLeaveDialog()"
-              (finishRequested)="finishRecord()"
               (partialFillRequested)="fillDemoRecord(false)"
               (completeFillRequested)="fillDemoRecord(true)"
               [schema]="currentSchema()"
               [activeSection]="activeSection()"
               [story]="story()"
-              [eventOptions]="eventOptions"
               [selectedEvent]="selectedEvent()"
               [selectedEventOption]="selectedEventOption()"
               [selectedQuestions]="selectedQuestions()"
@@ -211,9 +207,7 @@
               [sharedEventId]="currentRecord()?.eventId || ''"
               [ethnicApplies]="ethnicApplies()"
               [progress]="progressState()"
-              [lastSavedAt]="savedLocallyAt()"
               (storyChange)="setStory($event)"
-              (eventChange)="setEvent($event)"
               (answerChange)="setAnswer($event.index, $event.value)"
               (fieldChange)="setFieldValue($event.section, $event.id, $event.value)"
               (sharedEventChange)="selectSharedEvent($event)"
@@ -224,7 +218,6 @@
           </main>
         </div>
       }
-      <!--<app-site-footer />-->
     </div>
   </aside>
 

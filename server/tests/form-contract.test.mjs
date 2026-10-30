@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SECTION_SCHEMAS, ethnicApplies, applicable, captureProgress, captureStats, validateCapture, syncDeclarant, memberNeedsCompletion, householdComplete, finishProgress, eventForType } from './generated/contract.mjs';
+import { SECTION_SCHEMAS, ethnicApplies, applicable, captureProgress, captureStats, validateCapture, syncDeclarant, memberNeedsCompletion, householdComplete, finishProgress, eventForType } from '../generated/contract.mjs';
 
 const ethnicFields = SECTION_SCHEMAS[5].groups.flatMap(group => group.fields);
 const capture = answers => ({ answers, story: '', selectedEvent: 'inundacion', members: [] });
